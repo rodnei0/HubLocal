@@ -1,16 +1,15 @@
-import React from "react";
-import { Route, Routes, BrowserRouter } from "react-router-dom";
-import "./App.css";
-import SignUp from "./pages/SignUp";
+import React from 'react'
+import { Route, Routes, BrowserRouter } from 'react-router-dom'
+import SignUp from './pages/SignUp'
 
-function App() {
+const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<SignUp />} />
       </Routes>
     </BrowserRouter>
-  );
+  )
 }
 
-export default App;
+export default App

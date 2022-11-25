@@ -1,16 +1,17 @@
-import { Box } from "@mui/system";
+import React from 'react'
+import { Box } from '@mui/system'
 
 const styles = {
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  alignItems: "center",
-  width: "100%",
-};
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: '100%'
+}
 
 interface Props {
-  children: React.ReactNode;
-  onSubmit: React.FormEventHandler<HTMLFormElement>;
+  children: React.ReactNode
+  onSubmit: React.FormEventHandler<HTMLFormElement>
 }
 
 const Form2: React.FC<Props> = ({ children, onSubmit }) => {
@@ -18,7 +19,7 @@ const Form2: React.FC<Props> = ({ children, onSubmit }) => {
     <Box sx={styles} component="form" onSubmit={onSubmit}>
       {children}
     </Box>
-  );
-};
+  )
+}
 
-export default Form2;
+export default Form2
