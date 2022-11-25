@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
+  Container,
   Box,
   Button,
-  Container,
   Divider,
   Link,
   TextField,
@@ -13,44 +13,44 @@ import { useForm } from '../../hooks/useForm'
 import Form from '../../components/Form'
 import PasswordInput from '../../components/PasswordInput'
 import styles from './styles'
-import api from '../../services/api'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { AxiosError } from 'axios'
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { clearState, signIn, userSelector } from './userSlice'
 
-const SignUp: React.FC = () => {
+const SignIn: React.FC = () => {
+  const { isSuccess, isError, message } = useAppSelector(userSelector)
+  const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const initialState = {
     email: '',
-    password: '',
-    passwordConfirmation: ''
+    password: ''
   }
 
-  const handleSignUp = async (): Promise<void> => {
-    if (((values?.email).length === 0) || ((values?.password).length === 0) || ((values?.passwordConfirmation).length === 0)) {
+  const handleSignIn = async (): Promise<void> => {
+    const { email, password } = values
+
+    if (email.length === 0 || password.length === 0) {
       alert('Todos os campos são obrigatórios!')
       return
     }
 
-    const { email, password, passwordConfirmation } = values
-
-    if (password !== passwordConfirmation) {
-      alert('As senhas devem ser iguais!')
-      return
-    }
-
-    try {
-      await api.signUp({ email, password })
-      alert('Cadastro efetuado com sucesso!')
-      navigate('/sign-in')
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        alert(error?.response?.data.message)
-      }
-    }
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    dispatch(signIn({ email, password }))
   }
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  const { onChange, onSubmit, values } = useForm(handleSignUp, initialState)
+  const { onChange, onSubmit, values } = useForm(handleSignIn, initialState)
+
+  useEffect(() => {
+    if (isSuccess) {
+      alert('Login efetuado com sucesso!')
+      navigate('/companies')
+    }
+
+    if (isError) {
+      alert(message)
+    }
+    dispatch(clearState())
+  }, [isSuccess, isError])
 
   return (
     <>
@@ -60,7 +60,7 @@ const SignUp: React.FC = () => {
           <Form onSubmit={onSubmit}>
             <Box sx={styles.container}>
               <Typography sx={styles.title} variant="h4" component="h1">
-                Cadastro
+                Login
               </Typography>
               <Box sx={styles.dividerContainer}>
                 <Divider sx={{ flex: '1' }} />
@@ -82,19 +82,12 @@ const SignUp: React.FC = () => {
                 onChange={onChange}
                 value={values.password}
               />
-              <PasswordInput
-                name="passwordConfirmation"
-                sx={styles.input}
-                label="Confirme sua senha"
-                onChange={onChange}
-                value={values.passwordConfirmation}
-              />
               <Box sx={styles.actionsContainer}>
-                <Link component={RouterLink} to="/sign-in">
-                  <Typography>Já possuo cadastro</Typography>
+                <Link component={RouterLink} to="/sign-up">
+                  <Typography>Não possuo cadastro</Typography>
                 </Link>
-                <Button id="signUp" variant="contained" type="submit">
-                  Cadastrar
+                <Button id="signIn" variant="contained" type="submit">
+                  Entrar
                 </Button>
               </Box>
             </Box>
@@ -105,4 +98,4 @@ const SignUp: React.FC = () => {
   )
 }
 
-export default SignUp
+export default SignIn

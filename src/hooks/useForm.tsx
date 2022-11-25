@@ -3,12 +3,12 @@ import { useState } from 'react'
 interface FormData {
   email: string
   password: string
-  passwordConfirmation: string
+  passwordConfirmation?: string
 }
 
-export const useForm = (callback: () => Promise<void>, initialState: FormData): {
+export const useForm = (callback: () => void, initialState: FormData): {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-  onSubmit: (event: React.FormEvent<HTMLFormElement>) => Promise<void>
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void
   values: FormData
 } => {
   const [values, setValues] = useState(initialState)
@@ -17,9 +17,9 @@ export const useForm = (callback: () => Promise<void>, initialState: FormData): 
     setValues({ ...values, [event.target.name]: event.target.value })
   }
 
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault()
-    await callback()
+    callback()
   }
 
   return {
