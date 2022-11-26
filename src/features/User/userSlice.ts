@@ -39,6 +39,7 @@ interface UserInfo {
   isSuccess: boolean
   isError: boolean
   message: string
+  token: string
 }
 
 export const userSlice = createSlice({
@@ -48,13 +49,15 @@ export const userSlice = createSlice({
     isFetching: false,
     isSuccess: false,
     isError: false,
-    message: ''
+    message: '',
+    token: ''
   },
   reducers: {
     clearState: (state) => {
       state.isError = false
       state.isSuccess = false
       state.isFetching = false
+      state.message = ''
 
       return state
     }
@@ -77,7 +80,7 @@ export const userSlice = createSlice({
       .addCase(signIn.fulfilled, (state, action) => {
         state.isFetching = false
         state.isSuccess = true
-        state.email = action.payload as string
+        state.token = action.payload as string
       })
       .addCase(signIn.pending, (state) => {
         state.isFetching = true

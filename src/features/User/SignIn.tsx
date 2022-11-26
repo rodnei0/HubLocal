@@ -26,24 +26,19 @@ const SignIn: React.FC = () => {
   }
 
   const handleSignIn = async (): Promise<void> => {
-    const { email, password } = values
-
-    if (email.length === 0 || password.length === 0) {
-      alert('Todos os campos são obrigatórios!')
-      return
-    }
+    const { email, password } = formData
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     dispatch(signIn({ email, password }))
   }
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  const { onChange, onSubmit, values } = useForm(handleSignIn, initialState)
+  const { onChange, onSubmit, formData } = useForm(handleSignIn, initialState)
 
   useEffect(() => {
     if (isSuccess) {
       alert('Login efetuado com sucesso!')
-      navigate('/companies')
+      navigate('/company-list')
     }
 
     if (isError) {
@@ -54,45 +49,43 @@ const SignIn: React.FC = () => {
 
   return (
     <>
-      <Container sx={{ height: '100vh' }} disableGutters={true}>
-        <Container component={'main'} sx={{ height: '100%', display: 'flex' }}>
-          {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-          <Form onSubmit={onSubmit}>
-            <Box sx={styles.container}>
-              <Typography sx={styles.title} variant="h4" component="h1">
-                Login
-              </Typography>
-              <Box sx={styles.dividerContainer}>
-                <Divider sx={{ flex: '1' }} />
-              </Box>
-              <TextField
-                id="email"
-                name="email"
-                sx={styles.input}
-                label="Email"
-                type="email"
-                variant="outlined"
-                onChange={onChange}
-                value={values.email}
-              />
-              <PasswordInput
-                name="password"
-                sx={styles.input}
-                label="Senha"
-                onChange={onChange}
-                value={values.password}
-              />
-              <Box sx={styles.actionsContainer}>
-                <Link component={RouterLink} to="/sign-up">
-                  <Typography>Não possuo cadastro</Typography>
-                </Link>
-                <Button id="signIn" variant="contained" type="submit">
-                  Entrar
-                </Button>
-              </Box>
+      <Container component={'main'} sx={styles.container}>
+        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+        <Form onSubmit={onSubmit}>
+          <Box sx={styles.container}>
+            <Typography sx={styles.title} variant="h4" component="h1">
+              Login
+            </Typography>
+            <Box sx={styles.dividerContainer}>
+              <Divider sx={{ flex: '1' }} />
             </Box>
-          </Form>
-        </Container>
+            <TextField
+              id="email"
+              name="email"
+              sx={styles.input}
+              label="Email"
+              type="email"
+              variant="outlined"
+              onChange={onChange}
+              value={formData.email}
+            />
+            <PasswordInput
+              name="password"
+              sx={styles.input}
+              label="Senha"
+              onChange={onChange}
+              value={formData.password}
+            />
+            <Box sx={styles.actionsContainer}>
+              <Link component={RouterLink} to="/sign-up">
+                <Typography>Não possuo cadastro</Typography>
+              </Link>
+              <Button id="signIn" variant="contained" type="submit">
+                Entrar
+              </Button>
+            </Box>
+          </Box>
+        </Form>
       </Container>
     </>
   )

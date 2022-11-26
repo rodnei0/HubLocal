@@ -4,10 +4,9 @@ const styles = {
     justifyContent: 'center',
     flexDirection: 'column',
     textAlign: 'center',
-    width: '100%',
-    height: '100vh'
+    width: '100%'
   },
-  title: { marginBottom: '30px' },
+  title: { marginBottom: '10px' },
   subtitle: { marginBottom: '10px' },
   dividerContainer: {
     display: 'flex',
@@ -19,7 +18,7 @@ const styles = {
   input: { marginBottom: '16px' },
   actionsContainer: {
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center'
   }
 }
