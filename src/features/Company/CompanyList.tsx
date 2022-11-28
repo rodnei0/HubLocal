@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { clearState, companySelector, getCompanies, deleteCompany } from './companySlice'
 import styles from './styles'
+import TopBar from '../../components/TopBar'
 
 interface CompanyDataList {
   id: number
@@ -69,6 +70,7 @@ const CompanyList: React.FC = () => {
 
   return (
     <>
+      <TopBar />
       <Container component={'main'} sx={styles.container}>
         <Typography sx={styles.title} variant="h4" component="h1">
           Lista de Empresas

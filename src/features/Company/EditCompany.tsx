@@ -13,6 +13,7 @@ import styles from './styles'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { useForm } from '../../hooks/useForm'
 import { getCompany, clearState, companySelector, updateCompany } from './companySlice'
+import TopBar from '../../components/TopBar'
 
 const EditCompany: React.FC = () => {
   const { isError, isSuccess, companyData, message } = useAppSelector(companySelector)
@@ -77,6 +78,7 @@ const EditCompany: React.FC = () => {
 
   return (
     <>
+      <TopBar />
       <Container component={'main'}>
         <Form onSubmit={onSubmit}>
           <Box sx={styles.container}>

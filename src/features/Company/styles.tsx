@@ -1,5 +1,6 @@
 const styles = {
   container: {
+    paddingTop: '32px',
     display: 'flex',
     justifyContent: 'center',
     flexDirection: 'column',

@@ -5,6 +5,7 @@ import SignUp from './features/User/Signup'
 import AddCompany from './features/Company/AddCompany'
 import CompanyList from './features/Company/CompanyList'
 import EditCompany from './features/Company/EditCompany'
+import Home from './features/Home/Home'
 
 const App: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/add-company" element={<AddCompany />} />
         <Route path="/edit-company/:id" element={<EditCompany />} />
         <Route path="/company-list" element={<CompanyList />} />

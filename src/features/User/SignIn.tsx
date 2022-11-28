@@ -38,7 +38,7 @@ const SignIn: React.FC = () => {
   useEffect(() => {
     if (isSuccess) {
       alert('Login efetuado com sucesso!')
-      navigate('/company-list')
+      navigate('/home')
     }
 
     if (isError) {
