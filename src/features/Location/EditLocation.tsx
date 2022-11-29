@@ -30,20 +30,17 @@ const EditLocation: React.FC = () => {
     responsibleCEP: ''
   }
 
-  const handleSubmit = (): void => {
+  const handleSubmit = async (): Promise<void> => {
     const { name, cep, responsibleName, responsiblePhone, responsibleCPF, responsibleCEP } = formData
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    dispatch(updateLocation({ id, name, cep, responsibleName, responsiblePhone, responsibleCPF, responsibleCEP }))
+    await dispatch(updateLocation({ id, name, cep, responsibleName, responsiblePhone, responsibleCPF, responsibleCEP }))
   }
 
   useEffect(() => {
     const getLocationsList = async (): Promise<void> => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await dispatch(getLocation(id!))
+      await dispatch(getLocation(id as string))
       dispatch(clearState())
     }
-
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     getLocationsList()
   }, [])

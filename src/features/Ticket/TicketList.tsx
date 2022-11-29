@@ -14,57 +14,51 @@ import {
   Paper
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { clearState, companySelector, getCompanies, deleteCompany } from './companySlice'
+import { clearState, ticketSelector, getTickets } from './ticketSlice'
 import styles from './styles'
 import TopBar from '../../components/TopBar'
 import Loader from '../../components/Loader'
 
-interface CompanyDataList {
-  id: number
-  name: string
-  cnpj: string
-  description: string
-  responsibleName: string
+interface TicketDataList {
+  id: string
+  title: string
+  creationDate: string
+  updateDate: string
+  createdBy: string
+  updateById: string
+  status: string
 }
 
-const CompanyList: React.FC = () => {
+const TicketList: React.FC = () => {
   const dispatch = useAppDispatch()
-  const { companyList, isFetching } = useAppSelector(companySelector)
-  const rows: CompanyDataList[] = []
+  const { ticketList, isFetching } = useAppSelector(ticketSelector)
+  const rows: TicketDataList[] = []
   const navigate = useNavigate()
-  const [updateList, setUpdateList] = useState(false)
 
-  if (companyList.length !== 0) {
-    companyList.forEach(company => {
+  if (ticketList.length !== 0) {
+    ticketList.forEach(ticket => {
       rows.push({
-        id: company.id,
-        name: company.name,
-        cnpj: company.cnpj,
-        description: company.description,
-        responsibleName: company.responsibles[0].name
+        id: ticket.id as string,
+        title: ticket.title,
+        creationDate: ticket.creationDate,
+        updateDate: ticket.updateDate,
+        createdBy: ticket.createdBy.email,
+        updateById: ticket.updateById,
+        status: ticket.status
       })
     })
   }
 
-  const handleDelete = async (id: number): Promise<void> => {
-    const result = confirm('Tem certeza que deseja deletar esta empresa?')
-    if (result) {
-      await dispatch(deleteCompany(id))
-      setUpdateList(!updateList)
-    }
-  }
-
   useEffect(() => {
-    const getCompaniesList = async (): Promise<void> => {
-      await dispatch(getCompanies())
+    const getTicketsList = async (): Promise<void> => {
+      await dispatch(getTickets())
       dispatch(clearState())
     }
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    getCompaniesList()
-  }, [updateList])
+    getTicketsList()
+  }, [])
 
   return (
     <>
@@ -74,21 +68,16 @@ const CompanyList: React.FC = () => {
         : (
           <Container component={'main'} sx={styles.container}>
             <Typography sx={styles.title} variant="h4" component="h1">
-              Lista de Empresas
+              Lista de Tickets
             </Typography>
             <Box sx={styles.dividerContainer}>
               <Divider sx={{ flex: '1' }} />
             </Box>
-            <Box sx={styles.actionsContainer}>
-              <Button variant="contained" onClick={() => navigate('/add-company')}>
-                Adicionar Empresa
-              </Button>
-            </Box>
-            {companyList.length === 0
+            {ticketList.length === 0
               ? (
                 <Box sx={styles.subContainer}>
                   <Typography sx={styles.title} variant="h6" component="h2">
-                    Ainda não foram criadas empresas! Adicione uma empresa clicando no botão acima.
+                    Ainda não foram criados tickets! Atualize algum local para que um ticket seja criado.
                   </Typography>
                 </Box>
                 // eslint-disable-next-line @typescript-eslint/indent
@@ -99,10 +88,11 @@ const CompanyList: React.FC = () => {
                     <TableHead>
                       <TableRow>
                         <TableCell>ID</TableCell>
-                        <TableCell align="center">Nome</TableCell>
-                        <TableCell align="center">CNPJ</TableCell>
-                        <TableCell align="center">Descrição</TableCell>
-                        <TableCell align="center">Responsável</TableCell>
+                        <TableCell align="center">Título</TableCell>
+                        <TableCell align="center">Criação</TableCell>
+                        <TableCell align="center">Atualização</TableCell>
+                        <TableCell align="center">Criado por</TableCell>
+                        <TableCell align="center">Status</TableCell>
                         <TableCell align="center">Ações</TableCell>
                       </TableRow>
                     </TableHead>
@@ -115,14 +105,13 @@ const CompanyList: React.FC = () => {
                           <TableCell component="th" scope="row">
                             {row.id}
                           </TableCell>
-                          <TableCell align="center">{row.name}</TableCell>
-                          <TableCell align="center">{row.cnpj}</TableCell>
-                          <TableCell align="center">{row.description}</TableCell>
-                          <TableCell align="center">{row.responsibleName}</TableCell>
+                          <TableCell align="center">{row.title}</TableCell>
+                          <TableCell align="center">{row.creationDate}</TableCell>
+                          <TableCell align="center">{row.updateDate}</TableCell>
+                          <TableCell align="center">{row.createdBy}</TableCell>
+                          <TableCell align="center">{row.status}</TableCell>
                           <TableCell align="center">
-                            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
-                            <Button onClick={async () => await handleDelete(row.id)}><DeleteForeverIcon /></Button>
-                            <Button onClick={() => navigate(`/edit-company/${row.id}`)}><EditIcon /></Button>
+                            <Button onClick={() => navigate(`/edit-ticket/${row.id}`)} disabled={row.status === 'CONCLUIDO'}><EditIcon /></Button>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -138,4 +127,4 @@ const CompanyList: React.FC = () => {
   )
 }
 
-export default CompanyList
+export default TicketList

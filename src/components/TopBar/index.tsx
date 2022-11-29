@@ -13,7 +13,7 @@ const TopBar: React.FC = () => {
       <Typography variant='h6' color='black'>
         HubLocal
       </Typography>
-      <LogoutIcon sx={{ color: 'black', width: '30px' }}></LogoutIcon>
+      <LogoutIcon onClick={() => { navigate('/') }} sx={{ color: 'black', width: '30px' }}></LogoutIcon>
     </AppBar>
   )
 }

@@ -7,8 +7,9 @@ const baseAPI = axios.create({
 })
 
 export interface UserData {
+  id?: number
   email: string
-  password: string
+  password?: string
 }
 
 const signUp = async (signUpData: UserData): Promise<string> => {
@@ -21,9 +22,15 @@ const signIn = async (signInData: UserData): Promise<string> => {
   return response.data
 }
 
+const getUsers = async (): Promise<UserData[]> => {
+  const response = await baseAPI.get('users')
+  return response.data
+}
+
 const api = {
   signUp,
-  signIn
+  signIn,
+  getUsers
 }
 
 export default api

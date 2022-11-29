@@ -58,8 +58,7 @@ const deleteLocation = async (id: number): Promise<void> => {
 }
 
 const updateLocation = async (data: AddLocationData): Promise<void> => {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  await baseAPI.patch(`locations/${data.id!}`, data)
+  await baseAPI.patch(`locations/${data.id as string}`, data)
 }
 
 const api = {

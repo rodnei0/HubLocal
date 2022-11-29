@@ -1,13 +1,15 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import companySlice from '../features/Company/companySlice'
 import locationSlice from '../features/Location/locationSlice'
+import ticketSlice from '../features/Ticket/ticketSlice'
 import userSlice from '../features/User/userSlice'
 
 export const store = configureStore({
   reducer: {
     user: userSlice,
     company: companySlice,
-    location: locationSlice
+    location: locationSlice,
+    ticket: ticketSlice
   }
 })
 

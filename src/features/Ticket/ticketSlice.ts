@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { AxiosError } from 'axios'
 import { RootState } from '../../app/store'
-import api, { UserData } from './userAPI'
+import api, { UpdateTicketData, TicketData } from './ticketAPI'
 
-export const signUp = createAsyncThunk(
-  'users/sign-up',
-  async (signUpData: UserData, thunkAPI) => {
+export const getTicket = createAsyncThunk(
+  'ticket/getTicket',
+  async (id: string, thunkAPI) => {
     try {
-      const response = await api.signUp(signUpData)
+      const response = await api.getTicket(id)
       return response
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -18,26 +18,11 @@ export const signUp = createAsyncThunk(
   }
 )
 
-export const signIn = createAsyncThunk(
-  'users/sign-in',
-  async (signUpData: UserData, thunkAPI) => {
-    try {
-      const response = await api.signIn(signUpData)
-      return response
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        const message: string = error.response?.data.message
-        return thunkAPI.rejectWithValue(message)
-      }
-    }
-  }
-)
-
-export const getUsers = createAsyncThunk(
-  'users/get',
+export const getTickets = createAsyncThunk(
+  'ticket/getTickets',
   async (_, thunkAPI) => {
     try {
-      const response = await api.getUsers()
+      const response = await api.getTickets()
       return response
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -48,28 +33,44 @@ export const getUsers = createAsyncThunk(
   }
 )
 
-interface UserInfo {
-  email: string
+export const updateTicket = createAsyncThunk(
+  'ticket/update',
+  async (data: UpdateTicketData, thunkAPI) => {
+    try {
+      const response = await api.updateTicket(data)
+      return response
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        const message: string = error.response?.data.message
+        return thunkAPI.rejectWithValue(message)
+      }
+    }
+  }
+)
+
+interface TicketInfo {
   isFetching: boolean
   isSuccess: boolean
   isError: boolean
   message: string
-  token: string
-  usersList: UserData[]
+  ticketData: TicketData
+  ticketList: TicketData[]
 }
 
-const initialState: UserInfo = {
-  email: '',
+// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+const ticketDataObject = {} as TicketData
+
+const initialState: TicketInfo = {
   isFetching: false,
   isSuccess: false,
   isError: false,
   message: '',
-  token: '',
-  usersList: []
+  ticketData: ticketDataObject,
+  ticketList: []
 }
 
-export const userSlice = createSlice({
-  name: 'user',
+export const ticketSlice = createSlice({
+  name: 'ticket',
   initialState,
   reducers: {
     clearState: (state) => {
@@ -83,41 +84,39 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(signUp.fulfilled, (state, action) => {
+      .addCase(getTickets.fulfilled, (state, action) => {
         state.isFetching = false
         state.isSuccess = true
-        state.email = action.payload as string
+        state.ticketList = action.payload as TicketData[]
       })
-      .addCase(signUp.pending, (state) => {
+      .addCase(getTickets.pending, (state) => {
         state.isFetching = true
       })
-      .addCase(signUp.rejected, (state, action) => {
+      .addCase(getTickets.rejected, (state, action) => {
         state.isFetching = false
         state.isError = true
         state.message = action.payload as string
       })
-      .addCase(signIn.fulfilled, (state, action) => {
+      .addCase(getTicket.fulfilled, (state, action) => {
         state.isFetching = false
-        state.isSuccess = true
-        state.token = action.payload as string
+        state.ticketData = action.payload as TicketData
       })
-      .addCase(signIn.pending, (state) => {
+      .addCase(getTicket.pending, (state) => {
         state.isFetching = true
       })
-      .addCase(signIn.rejected, (state, action) => {
+      .addCase(getTicket.rejected, (state, action) => {
         state.isFetching = false
         state.isError = true
         state.message = action.payload as string
       })
-      .addCase(getUsers.fulfilled, (state, action) => {
+      .addCase(updateTicket.fulfilled, (state, action) => {
         state.isFetching = false
         state.isSuccess = true
-        state.usersList = action.payload as UserData[]
       })
-      .addCase(getUsers.pending, (state) => {
+      .addCase(updateTicket.pending, (state) => {
         state.isFetching = true
       })
-      .addCase(getUsers.rejected, (state, action) => {
+      .addCase(updateTicket.rejected, (state, action) => {
         state.isFetching = false
         state.isError = true
         state.message = action.payload as string
@@ -125,8 +124,8 @@ export const userSlice = createSlice({
   }
 })
 
-export const { clearState } = userSlice.actions
+export const { clearState } = ticketSlice.actions
 
-export const userSelector = (state: RootState): UserInfo => state.user
+export const ticketSelector = (state: RootState): TicketInfo => state.ticket
 
-export default userSlice.reducer
+export default ticketSlice.reducer

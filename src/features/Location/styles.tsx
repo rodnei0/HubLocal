@@ -7,6 +7,12 @@ const styles = {
     textAlign: 'center',
     width: '100%'
   },
+  subContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '60vh'
+  },
   title: { marginBottom: '10px' },
   subtitle: { marginBottom: '10px' },
   dividerContainer: {
