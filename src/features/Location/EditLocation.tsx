@@ -12,19 +12,18 @@ import Form from '../../components/Form'
 import styles from './styles'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { useForm } from '../../hooks/useForm'
-import { getCompany, clearState, companySelector, updateCompany } from './companySlice'
+import { getLocation, clearState, locationSelector, updateLocation } from './locationSlice'
 import TopBar from '../../components/TopBar'
 
-const EditCompany: React.FC = () => {
-  const { isError, isSuccess, companyData, message } = useAppSelector(companySelector)
+const EditLocation: React.FC = () => {
+  const { isError, isSuccess, locationData, message } = useAppSelector(locationSelector)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
 
   const initialState = {
     name: '',
-    cnpj: '',
-    description: '',
+    cep: '',
     responsibleName: '',
     responsibleCPF: '',
     responsiblePhone: '',
@@ -32,42 +31,41 @@ const EditCompany: React.FC = () => {
   }
 
   const handleSubmit = (): void => {
-    const { name, cnpj, description, responsibleName, responsiblePhone, responsibleCPF, responsibleCEP } = formData
+    const { name, cep, responsibleName, responsiblePhone, responsibleCPF, responsibleCEP } = formData
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    dispatch(updateCompany({ id, name, cnpj, description, responsibleName, responsiblePhone, responsibleCPF, responsibleCEP }))
+    dispatch(updateLocation({ id, name, cep, responsibleName, responsiblePhone, responsibleCPF, responsibleCEP }))
   }
 
   useEffect(() => {
-    const getCompaniesList = async (): Promise<void> => {
+    const getLocationsList = async (): Promise<void> => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await dispatch(getCompany(id!))
+      await dispatch(getLocation(id!))
       dispatch(clearState())
     }
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    getCompaniesList()
+    getLocationsList()
   }, [])
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   const { onChange, onSubmit, formData } = useForm(handleSubmit, initialState)
 
   useEffect(() => {
-    if (Object.keys(companyData).length !== 0) {
-      formData.name = companyData.name
-      formData.cnpj = companyData.cnpj
-      formData.description = companyData.description
-      formData.responsibleName = companyData.responsibles[0].name
-      formData.responsibleCPF = companyData.responsibles[0].cpf
-      formData.responsiblePhone = companyData.responsibles[0].phone
-      formData.responsibleCEP = companyData.responsibles[0].address.zipcode.replace(/\D/g, '')
+    if (Object.keys(locationData).length !== 0) {
+      formData.name = locationData.name
+      formData.cep = locationData.address.zipcode.replace(/\D/g, '')
+      formData.responsibleName = locationData.responsibles[0].name
+      formData.responsibleCPF = locationData.responsibles[0].cpf
+      formData.responsiblePhone = locationData.responsibles[0].phone
+      formData.responsibleCEP = locationData.responsibles[0].address.zipcode.replace(/\D/g, '')
     }
-  }, [companyData])
+  }, [locationData])
 
   useEffect(() => {
     if (isSuccess) {
       alert('Dados atualizados com sucesso!')
-      navigate('/company-list')
+      navigate('/location-list')
     }
 
     if (isError) {
@@ -83,7 +81,7 @@ const EditCompany: React.FC = () => {
         <Form onSubmit={onSubmit}>
           <Box sx={styles.container}>
             <Typography sx={styles.title} variant="h4" component="h1">
-              Editar Empresa
+              Editar Local
             </Typography>
             <Box sx={styles.dividerContainer}>
               <Divider sx={{ flex: '1' }} />
@@ -99,25 +97,14 @@ const EditCompany: React.FC = () => {
               value={formData.name}
             />
             <TextField
-              id="cnpj"
-              name="cnpj"
+              id="cep"
+              name="cep"
               sx={styles.input}
-              label="CNPJ"
+              label="CEP"
               type="text"
               variant="outlined"
               onChange={onChange}
-              value={formData.cnpj}
-              disabled
-            />
-            <TextField
-              id="description"
-              name="description"
-              sx={styles.input}
-              label="Descrição"
-              type="text"
-              variant="outlined"
-              onChange={onChange}
-              value={formData.description}
+              value={formData.cep}
             />
             <Box sx={styles.dividerContainer}>
               <Divider sx={{ flex: '1' }} />
@@ -177,4 +164,4 @@ const EditCompany: React.FC = () => {
   )
 }
 
-export default EditCompany
+export default EditLocation

@@ -1,47 +1,59 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Container,
   Box,
   Button,
   Divider,
   TextField,
-  Typography
+  Typography,
+  InputLabel,
+  MenuItem,
+  FormControl
 } from '@mui/material'
-import { useNavigate, useParams } from 'react-router-dom'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import { useNavigate } from 'react-router-dom'
 import Form from '../../components/Form'
 import styles from './styles'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { useForm } from '../../hooks/useForm'
-import { getCompany, clearState, companySelector, updateCompany } from './companySlice'
+import { addLocation, clearState, locationSelector } from './locationSlice'
 import TopBar from '../../components/TopBar'
+import { companySelector, getCompanies } from '../Company/companySlice'
 
-const EditCompany: React.FC = () => {
-  const { isError, isSuccess, companyData, message } = useAppSelector(companySelector)
+const AddLocation: React.FC = () => {
+  const { isSuccess, isError, message } = useAppSelector(locationSelector)
+  const { companyList } = useAppSelector(companySelector)
+  const [companyId, setCompanyId] = useState('')
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const { id } = useParams<{ id: string }>()
 
   const initialState = {
     name: '',
-    cnpj: '',
-    description: '',
+    cep: '',
     responsibleName: '',
     responsibleCPF: '',
     responsiblePhone: '',
     responsibleCEP: ''
   }
 
-  const handleSubmit = (): void => {
-    const { name, cnpj, description, responsibleName, responsiblePhone, responsibleCPF, responsibleCEP } = formData
-
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    dispatch(updateCompany({ id, name, cnpj, description, responsibleName, responsiblePhone, responsibleCPF, responsibleCEP }))
+  const handleChange = (event: SelectChangeEvent): void => {
+    setCompanyId(event.target.value)
   }
 
+  const handleSubmit = (): void => {
+    const { name, cep, responsibleName, responsiblePhone, responsibleCPF, responsibleCEP } = formData
+
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    dispatch(addLocation({ name, cep, companyId, responsibleName, responsiblePhone, responsibleCPF, responsibleCEP }))
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  const { onChange, onSubmit, formData } = useForm(handleSubmit, initialState)
+
   useEffect(() => {
-    const getCompaniesList = async (): Promise<void> => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await dispatch(getCompany(id!))
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+    const getCompaniesList = async () => {
+      await dispatch(getCompanies())
       dispatch(clearState())
     }
 
@@ -49,25 +61,10 @@ const EditCompany: React.FC = () => {
     getCompaniesList()
   }, [])
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  const { onChange, onSubmit, formData } = useForm(handleSubmit, initialState)
-
-  useEffect(() => {
-    if (Object.keys(companyData).length !== 0) {
-      formData.name = companyData.name
-      formData.cnpj = companyData.cnpj
-      formData.description = companyData.description
-      formData.responsibleName = companyData.responsibles[0].name
-      formData.responsibleCPF = companyData.responsibles[0].cpf
-      formData.responsiblePhone = companyData.responsibles[0].phone
-      formData.responsibleCEP = companyData.responsibles[0].address.zipcode.replace(/\D/g, '')
-    }
-  }, [companyData])
-
   useEffect(() => {
     if (isSuccess) {
-      alert('Dados atualizados com sucesso!')
-      navigate('/company-list')
+      alert('Local cadastrado com sucesso!')
+      navigate('/location-list')
     }
 
     if (isError) {
@@ -83,7 +80,7 @@ const EditCompany: React.FC = () => {
         <Form onSubmit={onSubmit}>
           <Box sx={styles.container}>
             <Typography sx={styles.title} variant="h4" component="h1">
-              Editar Empresa
+              Cadastrar local
             </Typography>
             <Box sx={styles.dividerContainer}>
               <Divider sx={{ flex: '1' }} />
@@ -99,26 +96,31 @@ const EditCompany: React.FC = () => {
               value={formData.name}
             />
             <TextField
-              id="cnpj"
-              name="cnpj"
+              id="cep"
+              name="cep"
               sx={styles.input}
-              label="CNPJ"
+              label="CEP"
               type="text"
               variant="outlined"
               onChange={onChange}
-              value={formData.cnpj}
-              disabled
+              value={formData.cep}
             />
-            <TextField
-              id="description"
-              name="description"
-              sx={styles.input}
-              label="Descrição"
-              type="text"
-              variant="outlined"
-              onChange={onChange}
-              value={formData.description}
-            />
+            <FormControl>
+              <InputLabel id="teste">Empresa</InputLabel>
+              <Select
+                // labelId="teste"
+                id="demo-simple-select"
+                value={companyId}
+                label="Empresa"
+                onChange={handleChange}
+              >
+                {companyList.map(company => {
+                  return (
+                    <MenuItem key={company.id} value={company.id}>{company.name}</MenuItem>
+                  )
+                })}
+              </Select>
+            </FormControl>
             <Box sx={styles.dividerContainer}>
               <Divider sx={{ flex: '1' }} />
             </Box>
@@ -167,7 +169,7 @@ const EditCompany: React.FC = () => {
             />
             <Box sx={styles.actionsContainer}>
               <Button id="signIn" variant="contained" type="submit">
-                Atualizar
+                Cadastrar
               </Button>
             </Box>
           </Box>
@@ -177,4 +179,4 @@ const EditCompany: React.FC = () => {
   )
 }
 
-export default EditCompany
+export default AddLocation

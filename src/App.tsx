@@ -6,6 +6,9 @@ import AddCompany from './features/Company/AddCompany'
 import CompanyList from './features/Company/CompanyList'
 import EditCompany from './features/Company/EditCompany'
 import Home from './features/Home/Home'
+import AddLocation from './features/Location/AddLocation'
+import EditLocation from './features/Location/EditLocation'
+import LocationList from './features/Location/LocationList'
 
 const App: React.FC = () => {
   return (
@@ -17,6 +20,9 @@ const App: React.FC = () => {
         <Route path="/add-company" element={<AddCompany />} />
         <Route path="/edit-company/:id" element={<EditCompany />} />
         <Route path="/company-list" element={<CompanyList />} />
+        <Route path="/add-location" element={<AddLocation />} />
+        <Route path="/edit-location/:id" element={<EditLocation />} />
+        <Route path="/location-list" element={<LocationList />} />
       </Routes>
     </BrowserRouter>
   )

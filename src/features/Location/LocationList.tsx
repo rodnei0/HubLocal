@@ -17,52 +17,52 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { clearState, companySelector, getCompanies, deleteCompany } from './companySlice'
+import { clearState, locationSelector, getLocations, deleteLocation } from './locationSlice'
 import styles from './styles'
 import TopBar from '../../components/TopBar'
 
-interface CompanyDataList {
+interface LocationDataList {
   id: number
   name: string
-  cnpj: string
-  description: string
+  cep: string
+  companyName: string
   responsibleName: string
 }
 
-const CompanyList: React.FC = () => {
+const LocationList: React.FC = () => {
   const dispatch = useAppDispatch()
-  const { companyList } = useAppSelector(companySelector)
-  const rows: CompanyDataList[] = []
+  const { locationList } = useAppSelector(locationSelector)
+  const rows: LocationDataList[] = []
   const navigate = useNavigate()
   const [updateList, setUpdateList] = useState(false)
 
-  if (companyList.length !== 0) {
-    companyList.forEach(company => {
+  if (locationList.length !== 0) {
+    locationList.forEach(location => {
       rows.push({
-        id: company.id,
-        name: company.name,
-        cnpj: company.cnpj,
-        description: company.description,
-        responsibleName: company.responsibles[0].name
+        id: location.id,
+        name: location.name,
+        cep: location.address.zipcode,
+        companyName: location.company.name,
+        responsibleName: location.responsibles[0].name
       })
     })
   }
 
   const handleDelete = async (id: number): Promise<void> => {
-    const result = confirm('Tem certeza que deseja deletar esta empresa?')
+    const result = confirm('Tem certeza que deseja deletar este local?')
     if (result) {
-      await dispatch(deleteCompany(id))
+      await dispatch(deleteLocation(id))
       setUpdateList(!updateList)
     }
   }
 
   useEffect(() => {
-    const getCompaniesList = async (): Promise<void> => {
-      await dispatch(getCompanies())
+    const getLocationsList = async (): Promise<void> => {
+      await dispatch(getLocations())
       dispatch(clearState())
     }
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    getCompaniesList()
+    getLocationsList()
   }, [updateList])
 
   return (
@@ -70,14 +70,14 @@ const CompanyList: React.FC = () => {
       <TopBar />
       <Container component={'main'} sx={styles.container}>
         <Typography sx={styles.title} variant="h4" component="h1">
-          Lista de Empresas
+          Lista de Locais
         </Typography>
         <Box sx={styles.dividerContainer}>
           <Divider sx={{ flex: '1' }} />
         </Box>
         <Box sx={styles.actionsContainer}>
-          <Button variant="contained" onClick={() => navigate('/add-company')}>
-            Adicionar Empresa
+          <Button variant="contained" onClick={() => navigate('/add-location')}>
+            Adicionar Local
           </Button>
         </Box>
         <TableContainer component={Paper} sx={{ marginTop: '10px' }}>
@@ -86,8 +86,8 @@ const CompanyList: React.FC = () => {
               <TableRow>
                 <TableCell>ID</TableCell>
                 <TableCell align="center">Nome</TableCell>
-                <TableCell align="center">CNPJ</TableCell>
-                <TableCell align="center">Descrição</TableCell>
+                <TableCell align="center">CEP</TableCell>
+                <TableCell align="center">Empresa</TableCell>
                 <TableCell align="center">Responsável</TableCell>
                 <TableCell align="center">Ações</TableCell>
               </TableRow>
@@ -102,13 +102,13 @@ const CompanyList: React.FC = () => {
                     {row.id}
                   </TableCell>
                   <TableCell align="center">{row.name}</TableCell>
-                  <TableCell align="center">{row.cnpj}</TableCell>
-                  <TableCell align="center">{row.description}</TableCell>
+                  <TableCell align="center">{row.cep}</TableCell>
+                  <TableCell align="center">{row.companyName}</TableCell>
                   <TableCell align="center">{row.responsibleName}</TableCell>
                   <TableCell align="center">
                     {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
                     <Button onClick={async () => await handleDelete(row.id)}><DeleteForeverIcon /></Button>
-                    <Button onClick={() => navigate(`/edit-company/${row.id}`)}><EditIcon /></Button>
+                    <Button onClick={() => navigate(`/edit-location/${row.id}`)}><EditIcon /></Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -120,4 +120,4 @@ const CompanyList: React.FC = () => {
   )
 }
 
-export default CompanyList
+export default LocationList
